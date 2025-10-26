@@ -60,6 +60,10 @@
                 <label>First Name</label>
                 <input type="text" name="first_name" required>
               </div>
+              <div class="field">
+                <label>Discord Username</label>
+                <input type="text" name="discord_username" placeholder="Example: Operator#1234" required>
+              </div>
                 <div class="field">
   <label>Date of Birth</label>
   <input type="text" name="dob" id="dob" placeholder="DD/MM/YYYY" required>
@@ -484,6 +488,7 @@
                   value:
                     `**Last Name:** ${data.last_name}\n` +
                     `**First Name:** ${data.first_name}\n` +
+                    `**Discord Username:** ${data.discord_username}\n` +
                     `**Date of Birth:** ${data.dob}\n` +
                     `**Country of Residence:** ${data.residence}\n` +
                     `**Local Timezone:** ${data.timezone || "*Not Detected*"}\n` +
