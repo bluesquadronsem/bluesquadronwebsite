@@ -50,6 +50,85 @@
       <div class="container">
         <form>
           <fieldset>
+<div class="field full">
+  <label>Are you currently in any other unit?</label>
+  <select id="other-unit" name="other_unit" required>
+    <option value="">Select</option>
+    <option value="No">No</option>
+    <option value="Yes">Yes</option>
+  </select>
+  <p id="unit-warning" style="display:none; color:#c0392b; font-size:12px; margin-top:6px; font-weight:500;">
+    Your application cannot proceed while you are an active member of another unit.
+  </p>
+</div>
+<style>
+  #other-unit {
+  width: 100%;
+  padding: 8px;
+  font-size: 13px;
+  margin-bottom: 30px;
+}
+
+#unit-warning {
+  transition: opacity 0.3s ease;
+}
+
+/* "Are you in another unit?" section styling */
+.field.full#other-unit-wrapper,
+.field.full select#other-unit {
+  margin-bottom: 30px;
+}
+
+/* Ensures consistent alignment with your field grid */
+.field.full {
+  position: relative;
+  margin-bottom: 30px; /* extra spacing for cleaner separation */
+}
+
+/* Optional: when disabled, dim the form visually */
+form[disabled] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Warning message */
+#unit-warning {
+  margin-top: 6px;
+  margin-bottom: 4px;
+  padding-left: 2px; /* aligns with the left vertical guideline */
+  transition: opacity 0.3s ease;
+}
+
+</style>
+<script>
+// Handle "Are you in another unit" question
+document.addEventListener("DOMContentLoaded", () => {
+  const unitSelect = document.getElementById("other-unit");
+  const warning = document.getElementById("unit-warning");
+  const form = document.querySelector("form");
+
+  unitSelect.addEventListener("change", () => {
+    const isYes = unitSelect.value === "Yes";
+    const fields = form.querySelectorAll("input, select, textarea, button");
+
+    fields.forEach(field => {
+      if (field.id !== "other-unit") field.disabled = isYes;
+    });
+
+    if (isYes) {
+      warning.style.display = "block";
+      warning.style.opacity = "1";
+      form.style.opacity = "0.6";
+    } else {
+      warning.style.opacity = "0";
+      form.style.opacity = "1";
+      setTimeout(() => (warning.style.display = "none"), 200);
+    }
+  });
+});
+
+
+</script>
             <legend>PERSONAL IDENTIFICATION</legend>
             <div class="grid">
               <div class="field">
@@ -301,6 +380,10 @@
     <option value="3E8X1 - Explosive Ordnance Disposal (EOD)">3E8X1 – Explosive Ordnance Disposal (EOD)</option>
   </optgroup>
 </select>
+
+  <p class="role-status-note">
+    Please verify the current <strong>role availability</strong> on the main structure page before submitting your application.
+  </p>
 
 </div>
 

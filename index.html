@@ -21,7 +21,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  
+<div class="gt-banner">
+  <div class="container">
+    <strong>GT-001 NOTICE:</strong>
+    Green Team classes are temporarily on hold due to the current pre-deployment cycle and a upcoming deployment.
+    Training will resume once <strong>8 candidates</strong> have been pooled and the deployment phase concludes.
+    <span id="gt-countdown" class="gt-countdown"></span>
+  </div>
+</div>
+<style>
+.gt-banner {
+  background: #0c1830;
+  color: rgba(255,255,255,0.85);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 12.5px;
+  letter-spacing: 0.2px;
+  line-height: 1.5;
+  padding: 6px 0;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  top: 0;
+  z-index: 999;
+}
+
+.gt-banner strong {
+    text-decoration: underline;
+  font-weight: 1200;
+  color: #fafafa; /* subtle gold accent */
+}
+
+.gt-countdown {
+  display: inline-block;
+  text-decoration: underline;
+  margin-left: 6px;
+  color: #ffffff; /* soft greenish aqua */
+  font-weight: 500;
+  font-size: 12px;
+}
+
+</style>
   <header>
     <div class="container">
       <img src="images/nsw_logo.png" alt="Naval Special Warfare Command Logo" class="logo">
@@ -498,3 +537,33 @@
 
 
 </style>
+
+<script>
+  // Target start date (12 weeks from now or edit as needed)
+  const GT_TARGET_ISO = '2026-01-19T19:00:00+01:00';
+  const gtTarget = new Date(GT_TARGET_ISO);
+
+  const countdownEl = document.getElementById('gt-countdown');
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = gtTarget - now;
+
+    if (diff <= 0) {
+      countdownEl.textContent = "— GREEN TEAM ACTIVE";
+      countdownEl.style.color = "#00ff99";
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days  = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const mins  = Math.floor((totalSeconds % 3600) / 60);
+    const secs  = totalSeconds % 60;
+
+    countdownEl.textContent = `— ${days}d ${hours}h ${mins}m ${secs}s`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
