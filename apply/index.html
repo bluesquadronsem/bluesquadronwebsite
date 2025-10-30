@@ -61,6 +61,22 @@
     Your application cannot proceed while you are an active member of another unit.
   </p>
 </div>
+<div class="field full" style="margin-top: -10px;" id="availability-est-wrapper">
+  <label>Are you available at our scheduled session time?</label>
+  <p style="font-size: 13px; margin-bottom: 6px; margin-top: -8px; color: #444;">
+  </p>
+<p id="local-time-display" style="font-size: 12px; color: #777; margin-bottom: 10px;">
+  <strong>Your time:</strong> calculating... <strong>Our time:</strong> 15:00 (EST)
+</p>
+  <select id="availability-est" name="availability_est" required>
+    <option value="">Select</option>
+    <option value="Yes">Yes, I am available at that time</option>
+    <option value="No">No, that time does not work for me</option>
+  </select>
+  <p id="availability-warning" style="display:none; color:#c0392b; font-size:12px; margin-top:6px; font-weight:500;">
+  We set a requirement to be available at least 2 days per week during scheduled session times.
+</p>
+</div>
 <style>
   #other-unit {
   width: 100%;
@@ -101,34 +117,75 @@ form[disabled] {
 
 </style>
 <script>
-// Handle "Are you in another unit" question
 document.addEventListener("DOMContentLoaded", () => {
-  const unitSelect = document.getElementById("other-unit");
-  const warning = document.getElementById("unit-warning");
+
+  /* === Convert 3PM EST to local time dynamically === */
+  const localDisplay = document.getElementById("local-time-display");
+  try {
+    const estDate = new Date();
+    estDate.setUTCHours(20, 0, 0, 0); // 3PM EST = 20:00 UTC
+    const localTime = estDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    });
+    const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    localDisplay.innerHTML = `<strong>Your time:</strong> ${localTime} (${tzName}) <strong>Our time:</strong> 15:00 (EST)`;
+  } catch (e) {
+    localDisplay.textContent = "Unable to determine your local time.";
+  }
+
   const form = document.querySelector("form");
+
+  /* === "Are you in another unit?" handler === */
+  const unitSelect = document.getElementById("other-unit");
+  const unitWarning = document.getElementById("unit-warning");
 
   unitSelect.addEventListener("change", () => {
     const isYes = unitSelect.value === "Yes";
     const fields = form.querySelectorAll("input, select, textarea, button");
 
-    fields.forEach(field => {
-      if (field.id !== "other-unit") field.disabled = isYes;
-    });
+    fields.forEach(field => field.disabled = isYes);
 
     if (isYes) {
-      warning.style.display = "block";
-      warning.style.opacity = "1";
+      unitWarning.style.display = "block";
+      unitWarning.style.opacity = "1";
       form.style.opacity = "0.6";
     } else {
-      warning.style.opacity = "0";
+      unitWarning.style.opacity = "0";
       form.style.opacity = "1";
-      setTimeout(() => (warning.style.display = "none"), 200);
+      setTimeout(() => (unitWarning.style.display = "none"), 200);
+      fields.forEach(field => field.disabled = false);
     }
   });
+
+  /* === "Are you available at 3PM EST?" handler === */
+  const estSelect = document.getElementById("availability-est");
+  const availWarning = document.getElementById("availability-warning");
+
+  if (estSelect) {
+    estSelect.addEventListener("change", () => {
+      const isNo = estSelect.value === "No";
+      const fields = form.querySelectorAll("input, select, textarea, button");
+
+      fields.forEach(field => field.disabled = isNo);
+
+      if (isNo) {
+        availWarning.style.display = "block";
+        availWarning.style.opacity = "1";
+        form.style.opacity = "0.6";
+      } else {
+        availWarning.style.opacity = "0";
+        form.style.opacity = "1";
+        setTimeout(() => (availWarning.style.display = "none"), 200);
+        fields.forEach(field => field.disabled = false);
+      }
+    });
+  }
 });
-
-
 </script>
+
+
             <legend>PERSONAL IDENTIFICATION</legend>
             <div class="grid">
               <div class="field">
